@@ -1,0 +1,283 @@
+{% extends './layout.html' %}
+
+{% block title %}Servicio 2{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="d-flex justify-content-end align-items-center p-4">
+    <div class="dropdown">
+        <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="dropper" aria-expanded="false">
+            <img class="rounded-circle shadow-1-strong" src="{{ url_for('static', filename=foto ) }}" alt="avatar" width="45" height="45" />
+        </a>
+      
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><p class="dropdown-header"><strong>Mi Perfil</strong></p></li>
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profile">
+                <i class="bi bi-person"></i> Mis Datos
+                </a>
+            </li>
+            <!-- Seleccion desahabilitada por falta de metodo nativo para cambiar contraseñas con Pyrebase4
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#password">
+                <i class="bi bi-search"></i>
+                Cambiar Clave
+                </a>
+            </li>
+            -->
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item fw-bold" href="#" data-bs-toggle="modal" data-bs-target="#close_session">
+                <i class="bi bi-box-arrow-left"></i>
+                Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="profile" tabindex="-1" aria-labelledby="profile" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row d-flex">
+                    <div class="col-6">
+                        <img class="shadow-1-strong me-3"
+                        src="{{ url_for('static', filename=foto ) }}" alt="avatar" width="200"
+                          height="200" />
+                    </div>
+                    <div class="col-6">
+                        <p><strong>{{ perfil.nombre }}</strong></p>
+                        <p>{{ perfil.rut }}</p>
+                        <p>{{ perfil.correo }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para cambiar contraseña, inhabilitado por no haber funcion en Pyrebase4 para cambiar la contraseña
+    Asociado con funciones en profile_modal.js
+<div class="modal fade" id="password" tabindex="-1" aria-labelledby="profile" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cambiar contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="password_form">
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="newPassword" data-bs-toggle="tooltip" data-bs-placement="top" title="La contraseña debe tener al menos 8 caracteres." placeholder="Introduce tu nueva contraseña" required>
+                        <div id="passwordLength" class="form-text" style="color: red;">Caracteres restantes: 8</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirma tu nueva contraseña" required>
+                        <div id="confirmMessage" class="form-text"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="password_change">Cambiar Contraseña</button>
+                    </div>
+                    <div id="password_toast" class="toast" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+                        <div class="toast-body">
+                            <span id="toast_message"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<div class="modal fade" id="close_session" tabindex="-1" aria-labelledby="close_session" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Cierre de Sesión
+            </div>
+            <div class="modal-body">
+                <p class="text-danger"><strong>¿Estas seguro que quieres salir de la sesión?</strong></p>
+            </div>
+            <div class="modal-footer">
+                <a type="button" href="/logout" class="btn btn-danger">Si</a>
+                <button type="button" href="#" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="d-flex py-3">
+    <a href="/main_page" class="btn btn-secondary border-dark btn-lg " id="Atras"><strong><i class="bi bi-arrow-left"></i> Atras</strong></a>
+</div>
+<div class="container-fluid d-flex">
+    <div class="container align-items-start col-sm-9">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" data-bs-toggle="tab" href="#video_tab">Video</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#transcrip_tab">Transcripción</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#artefac_tab">Artefactos</a>
+            </li>
+        </ul>
+
+        <!-- Contenido tabs -->
+
+        <div class="tab-content">
+            <div id="video_tab" class="container tab-pane active"><br>
+                <div class="container mt-3 w-100 ratio ratio-21x9">
+                    <video controls width="854" height="480" class="border border-black" id="myvideo">
+                    <source src="{{ url_for('static', filename=video ) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="container mt-3 w-100" id="d3_1"></div>
+                <div class="container mt-3 w-100" id="d3_2"></div>
+            </div>
+            
+            <div id="transcrip_tab" class="container tab-pane"><br>
+                <p>Oprime en la fila para editar el texto de la transcripción.</p>
+                <div class="scrollable">
+                    <table class="table table-hover table-bordered border-dark" id="transcript">
+                        <thead class="text-center">
+                            <tr>
+                                <th style="display:none;">id</th>
+                                <th class="col-6">Texto</th>
+                                <th class="col-3">Inicio</th>
+                                <th class="col-3">Cierre</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bs-toggle="modal" data-bs-target="#edit-transcript">
+                            {% for tran in transcript %}
+                            <tr class="align-middle" onclick="editarTranscript('{{ tran.id|safe }}')">
+                                <td id="id" style="display:none;">{{ tran.id }}</td>
+                                <td class="col-6">{{ tran.text }}</td>
+                                <td class="col-3 text-center" id="start">{{ tran.start }}</td>
+                                <td class="col-3 text-center" id="end">{{ tran.end }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="my-3">
+                    <button class="btn btn-info float-end" onclick="downloadText()">
+                        <strong><i class="bi bi-download"></i> Descargar texto</strong>
+                    </button>
+                </div>
+                <div class="modal fade" id="edit-transcript" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="edit-transcript" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" >Editar Transcripción</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="limpiarCaja()"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea class="form-control" id="message-text" style="height: 200px"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="limpiarCaja()">Cancelar</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="saveTranscript()">Guardar y Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="artefac_tab" class="container tab-pane"><br>
+              <div class="scrollable">
+                <table class="table table-bordered border-dark" id="objetos">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Artefactos</th>
+                            <th>Inicio</th>
+                            <th>Cierre</th>
+                            <th>Confiabilidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in objetos %}
+                        <tr class="text-center">
+                            <td>{{ obj.objeto }}</td>
+                            <td id="inicio_obj">{{ obj.inicio }}</td>
+                            <td id="cierre_obj">{{ obj.cierre }}</td>
+                            <td>{{ obj.conf }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bloque de notas -->
+    <div class="row col-sm-3 border border-black">
+        <div class="card" style="min-height: 400px; width: 100%;">
+            <div class="card-header text-center py-1 fw-bold">
+                Notas
+            </div>
+            <div class="card-body d-flex flex-column" style="height: 100%;">
+                <!-- Contenedor para los comentarios con desplazamiento -->
+                <div class="scrollable-comments flex-grow-1">
+                    <div class="comment" id="comments">
+                        <!-- Aqui van las notas tomadas -->
+                    </div>
+                </div>
+
+                <!-- Caja de texto para ingresar nuevas notas -->
+                <div class="d-flex flex-start w-100">
+                    <img class="rounded-circle shadow-1-strong me-3"
+                        src="{{ url_for('static', filename=foto ) }}" alt="avatar" width="20"
+                      height="20" id="profilePhoto" />
+                    <div id="profileNameandTime" hidden>
+                        <h6 class="fw-bold text-primary mb-1" id="profileName">{{ perfil.nombre }}</h6>
+                        <p class="text-muted small mb-0" id="timeTag">-</p>
+                    </div>
+                    <div data-input-init class="form-outline w-100">
+                        <textarea class="form-control" id="new-comment" rows="3"
+                        style="background: #fff;" placeholder="Ingrese una Nota"></textarea>
+                    </div>
+                </div>
+                <div class="float-end">
+                    <div class="mt-2 pt-1">
+                        <button type="button" class="btn btn-secondary btn-sm" id="timetag" onclick="guardarTiempo()">Guardar tiempo</button>
+                    </div>
+                    <div id="toast" class="toast" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+                        <div class="toast-body">
+                            Tiempo guardado exitosamente!
+                        </div>
+                    </div>
+                    <div class="mt-2 pt-1">
+                        <button type="button" data-button-init data-ripple-init class="btn btn-primary btn-sm" id="btn-post">Guardar Comentario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='js/tablas.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/timelapse.js') }}"></script>
+        <script defer>timetables('{{ transcript|tojson }}')</script>
+        <script>objectTables('{{ objetos|tojson }}')</script>
+        <script src="{{ url_for('static', filename='js/notes.js') }}"></script>
+        <script>jsonScanner('{{ json|tojson }}');</script>
+        <!-- Script inhabilitado por falta de metodo nativo de Pyrebase para cambiar contraseñas
+        <script src="{{ url_for('static', filename='js/profile_modal.js') }}"></script>
+        -->
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+html,
+body {
+    height: 100%;
+    width: auto;
+    background-color: #F2F2F2;
+}
+
+/*#drop-area {
+    height: 263px;
+    width: auto;
+    cursor: pointer;
+}*/
+
+#drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: auto;
+    height: 263px;
+    margin: 20px 0;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.highlight {
+    border-color: #6c6;
+}
+.thumbnail {
+    width: auto; /* Ajusta el tamaño según sea necesario */
+    height: 200px;
+    margin: 3px;
+}

@@ -1,0 +1,57 @@
+{% extends './layout.html' %}
+
+{% block title %}Servicio 2{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="d-flex justify-content-end align-items-center p-4">
+  <a href="/register" class="btn btn-secondary w-100">Registrarse</a>
+</div>
+{% endblock %}
+
+{% block body %}
+
+<form class="form-signin mx-auto my-5 text-center requires-validation" action="/login" method="POST" novalidate>
+  <h1 class="h3 mb-3 fw-normal">Ingrese sus Datos</h1>
+
+  {% with messages = get_flashed_messages() %}
+  
+  {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>{{ message }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+  {% endif %}
+
+  {% endwith %}
+
+  <div class="form-floating">
+    <input type="email" class="form-control" name="username" placeholder="name@example.com" required>
+    <label for="floatingInput">Correo Electronico</label>
+    <div class="invalid-feedback">
+      Please enter a message in the textarea.
+    </div>
+  </div>
+  <div class="form-floating mt-3">
+    <input type="password" class="form-control" name="password" placeholder="Password" required>
+    <label for="floatingPassword">Contraseña</label>
+    <div class="invalid-feedback">
+      Please enter a message in the textarea.
+    </div>
+  </div>
+
+  <div class="form-check text-start my-2">
+    <a href="/forget">Olvide mi contraseña</a>
+  </div>
+  <button class="btn btn-primary w-100 py-2" type="submit">Ingresar</button>
+  <p class="mt-5 mb-3 text-body-secondary">Universidad de Valparaiso</p>
+</form>
+
+<script src="{{ url_for('static', filename='js/login_verification.js') }}"
+
+{% endblock %}

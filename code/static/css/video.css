@@ -1,0 +1,58 @@
+html,
+body {
+    height: 100%;
+    width: auto;
+    background-color: #F2F2F2;
+}
+
+#notas {
+    border: black;
+    background-color: #eee;
+}
+
+.card {
+  width: 100%; /* Asegura que la tarjeta ocupe el 100% del ancho del contenedor */
+  height: auto; /* Permite que la altura se ajuste automáticamente */
+}
+
+.scrollable-comments {
+  max-height: 800px; /* Ajusta la altura máxima según sea necesario */
+  overflow-y: auto; /* Habilita el desplazamiento vertical */
+  border: 1px solid #ccc; /* Opcional: agrega un borde para distinguir la sección */
+  padding: 10px; /* Opcional: agrega un poco de espacio interno */
+  margin-bottom: 10px; /* Opcional: espacio entre la sección de comentarios y la caja de texto */
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column; /* Permite que los elementos se apilen verticalmente */
+  height: 100%; /* Asegura que el cuerpo de la tarjeta ocupe toda la altura disponible */
+}
+
+.comment {
+  margin-bottom: 10px; /* Espacio entre los comentarios */
+}
+
+textarea.form-control {
+  margin-bottom: 10px; /* Espacio entre la caja de texto y los botones */
+}
+
+.float-end {
+  margin-top: 10px; /* Espacio superior para los botones */
+}
+
+#toast {
+  background-color: #28a745; /* Color verde para el toast */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease;
+}
+
+
+.scrollable {
+    max-height: 700px;
+    overflow-y: scroll;
+
+}

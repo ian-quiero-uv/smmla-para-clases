@@ -1,0 +1,21 @@
+html,
+body {
+  height: 100%;
+  width: auto;
+  background-color: #F2F2F2;
+}
+
+#main {
+  display: flex;
+  width: max-content;
+  height: max-content;
+}
+
+#password_toast {
+  background-color: #dc3545; /* Color verde para el toast */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease;
+}

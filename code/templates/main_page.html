@@ -1,0 +1,275 @@
+{% extends './layout.html' %}
+
+{% block title %}Servicio 2{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="d-flex justify-content-end align-items-center p-4">
+    <div class="dropdown">
+        <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="dropper" aria-expanded="false">
+            <img class="rounded-circle shadow-1-strong" src="{{ url_for('static', filename=foto ) }}" alt="avatar" width="45" height="45" />
+        </a>
+      
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li><p class="dropdown-header"><strong>Mi Perfil</strong></p></li>
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profile">
+                <i class="bi bi-person"></i> Mis Datos
+                </a>
+            </li>
+            <!-- Seleccion desahabilitada por falta de metodo nativo para cambiar contraseñas con Pyrebase4
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#password">
+                <i class="bi bi-search"></i>
+                Cambiar Clave
+                </a>
+            </li>
+            -->
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item fw-bold" href="#" data-bs-toggle="modal" data-bs-target="#close_session">
+                <i class="bi bi-box-arrow-left"></i>
+                Cerrar Sesión
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="modal fade" id="profile" tabindex="-1" aria-labelledby="profile" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row d-flex">
+                    <div class="col-6">
+                        <img class="shadow-1-strong me-3"
+                        src="{{ url_for('static', filename=foto ) }}" alt="avatar" width="200"
+                          height="200" />
+                    </div>
+                    <div class="col-6">
+                        <p><strong>{{ perfil.nombre }}</strong></p>
+                        <p>{{ perfil.rut }}</p>
+                        <p>{{ perfil.correo }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para cambiar contraseña, inhabilitado por no haber funcion en Pyrebase4 para cambiar la contraseña
+    Asociado con funciones en profile_modal.js
+<div class="modal fade" id="password" tabindex="-1" aria-labelledby="profile" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cambiar contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="password_form">
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="newPassword" data-bs-toggle="tooltip" data-bs-placement="top" title="La contraseña debe tener al menos 8 caracteres." placeholder="Introduce tu nueva contraseña" required>
+                        <div id="passwordLength" class="form-text" style="color: red;">Caracteres restantes: 8</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirma tu nueva contraseña" required>
+                        <div id="confirmMessage" class="form-text"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="password_change">Cambiar Contraseña</button>
+                    </div>
+                    <div id="password_toast" class="toast" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+                        <div class="toast-body">
+                            <span id="toast_message"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<div class="modal fade" id="close_session" tabindex="-1" aria-labelledby="close_session" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Cierre de Sesión
+            </div>
+            <div class="modal-body">
+                <p class="text-danger"><strong>¿Estas seguro que quieres salir de la sesión?</strong></p>
+            </div>
+            <div class="modal-footer">
+                <a type="button" href="/logout" class="btn btn-danger">Si</a>
+                <button type="button" href="#" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid py-5">
+    <a class="btn btn-info border-dark btn-lg w-25 text-light" href="/upload">
+        <strong>
+            <i class="bi bi-cloud-upload-fill"></i>
+            Subir Archivo
+        </strong> 
+    </a>
+</div>
+
+<div class="container w-100" id="main">
+    <div class="table-responsive w-100">
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-6">
+                <input type="text" id="search" class="form-control" placeholder="Buscar..." onkeyup="filterTable()">
+            </div>
+            <div class="col-md-6">
+                <label class="me-2" for="items-per-page">Elementos por página:</label>
+                <select class="form-select d-inline-block w-auto" id="items-per-page">
+                    <!-- Cambiar valores por mas elevados para la paginacion-->
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
+        <!-- <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscador..." data-filter-for="mytable"> -->
+        <table class="table table-bordered border-dark table-hover" id="mytable">
+            <thead>
+                <tr class="text-center">
+                    <th scope="col" id="table-id" style="display:none;">#</th>
+                    <th scope="col" id="table-nombre" onclick="sortTable('nombre_vid')">Nombre</th>
+                    <th scope="col" id="table-fecha" onclick="sortTable('fecha')">Fecha</th>
+                    <th scope="col" id="table-practicante" onclick="sortTable('practicante')">Practicante</th>
+                    <th scope="col" id="table-establecimiento" onclick="sortTable('establecimiento')">Establecimiento</th>
+                    <th scope="col" id="table-contenido" onclick="sortTable('contenido')">Contenido</th>
+                </tr>
+            </thead>
+            <tbody data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" id="tabla-grabaciones-body">
+                <!--{% for grabacion in grabaciones %}
+                <tr onclick="validateUse('{{ grabacion.id|safe }}')">
+                    <th id="id" style="display:none;">{{ grabacion.id}}</th>
+                    <td>{{ grabacion.nombre_vid }}</td>
+                    <td>{{ grabacion.fecha }}</td>
+                    <td>{{ grabacion.practicante }}</td>
+                    <td>{{ grabacion.establecimiento }}</td>
+                    <td>{{ grabacion.contenido }}</td>
+                </tr>
+                {% endfor %}-->
+            </tbody>
+        </table>
+        <div class="col-md-12 text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center" id="pagination">
+                    <li class="page-item" onclick="changePage(-1)"><a class="page-link" href="#">Anterior</a></li>
+                    <!-- Páginas se generarán dinámicamente aquí -->
+                    <li class="page-item" onclick="changePage(1)"><a class="page-link" href="#">Siguiente</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+    <div>
+        <div class="collapse collapse-horizontal ms-1" id="collapseWidthExample">
+            <div class="card card-body border-dark" style="width: 300px;">
+                <img src="#" class="img-thumbnail ratio-4x3" alt="#" id="thumbnails">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <span class="row">
+                            <p class="col"><strong>Nombre:</strong></p>
+                            <p class="col" id="card_nombre"></p>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="row">
+                            <p class="col"><strong>Fecha:</strong></p>
+                            <p class="col" id="card_fecha"></p>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="row">
+                            <p class="col"><strong>Practicante:</strong></p>
+                            <p class="col" id="card_practicante"></p>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="row">
+                            <p class="col"><strong>Establecimiento:</strong></p>
+                            <p class="col" id="card_establecimiento"></p>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="row">
+                            <p class="col"><strong>Contenido:</strong></p>
+                            <p class="col" id="card_contenido"></p>
+                        </span>
+                    </li>
+                    <li class="list-group-item text-center">
+                        <a href="#" class="btn btn-primary my-2" id="card_access" onclick="gotoVideo()">Ver video</a>
+                        <a href="#" class="btn btn-success" id="card_reAnalize" data-bs-toggle="modal" data-bs-target="#reAnalize_modal">Cambiar Analísis</a>
+                    </li>
+                </ul>
+                <div class="modal fade" id="reAnalize_modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="edit-transcript" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" >Seleccionar modelo de Transcripción</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Selecciona el modelo para realizar la transcripción del video</h5>
+                                <p class="text-danger"><strong>Mientras más lento es el modelo, más se tardará en obtener la transcripción, pero más precisa será.</strong></p>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="tiny">
+                                    <label class="form-check-label" for="inlineRadio1">tiny (más rapido)</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="base" checked>
+                                    <label class="form-check-label" for="inlineRadio2">base</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="small">
+                                    <label class="form-check-label" for="inlineRadio3">small</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="medium">
+                                    <label class="form-check-label" for="inlineRadio3">medium</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="large">
+                                    <label class="form-check-label" for="inlineRadio3">large (más lento)</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <a type="button" href="#" class="btn btn-success" id="reAnalyzeButton">Cambiar analisís</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/tablegen.js')}}"></script>
+    <script defer>tableGen('{{ grabaciones|tojson }}')</script>
+    <script src="{{ url_for('static', filename='js/table_values.js') }}"></script>
+    <!-- Script inhabilitado por falta de metodo nativo de Pyrebase para cambiar contraseñas
+    <script src="{{ url_for('static', filename='js/profile_modal.js') }}"></script>
+    -->
+</div>
+{% endblock %}
