@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
                 Cierre de Sesión
             </div>
             <div class="modal-body">
-                <p class="text-danger"><strong>¿Estas seguro que quieres salir de la sesión?</strong></p>
+                <p class="text-danger"><strong>¿Estás seguro de que quieres salir de la sesión?</strong></p>
             </div>
             <div class="modal-footer">
                 <a type="button" href="/logout" class="btn btn-danger">Si</a>
@@ -122,7 +122,7 @@
 
 {% block body %}
 <div class="d-flex py-3">
-    <a href="/main_page" class="btn btn-secondary border-dark btn-lg " id="Atras"><strong><i class="bi bi-arrow-left"></i> Atras</strong></a>
+    <a href="/main_page" class="btn btn-secondary border-dark btn-lg " id="Atras"><strong><i class="bi bi-arrow-left"></i> Atrás</strong></a>
 </div>
 <div class="container-fluid d-flex">
     <div class="container align-items-start col-sm-9">
@@ -144,7 +144,7 @@
             <div id="video_tab" class="container tab-pane active"><br>
                 <div class="container mt-3 w-100 ratio ratio-21x9">
                     <video controls width="854" height="480" class="border border-black" id="myvideo">
-                    <source src="{{ url_for('static', filename=video ) }}" type="video/mp4">
+                    <source src="{{ url_for('static', filename='uploads/' ~ video ) }}" type="video/mp4">
                     Your browser does not support the video tag.
                     </video>
                 </div>
@@ -247,7 +247,7 @@
                       height="20" id="profilePhoto" />
                     <div id="profileNameandTime" hidden>
                         <h6 class="fw-bold text-primary mb-1" id="profileName">{{ perfil.nombre }}</h6>
-                        <p class="text-muted small mb-0" id="timeTag">-</p>
+                        <p class="text-muted small mb-0" id="timeTag"></p>
                     </div>
                     <div data-input-init class="form-outline w-100">
                         <textarea class="form-control" id="new-comment" rows="3"
@@ -260,7 +260,7 @@
                     </div>
                     <div id="toast" class="toast" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
                         <div class="toast-body">
-                            Tiempo guardado exitosamente!
+                            ¡Tiempo guardado exitosamente!
                         </div>
                     </div>
                     <div class="mt-2 pt-1">

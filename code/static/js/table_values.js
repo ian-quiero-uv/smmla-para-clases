@@ -8,9 +8,10 @@ function validateUse(id) {
 
             thumbnail = document.getElementById("thumbnails")
             nombre = table.rows[r].cells[1].innerText;
+            thumb_name = table.rows[r].cells[6].innerText;
 
             img = new Image()
-            img.src = "static/img/thumbnails/" + nombre + ".jpeg"
+            img.src = "static/uploads/" + id_video + "/" + thumb_name + ".jpeg"
 
             thumbnail.setAttribute("src", img.src)
             thumbnail.setAttribute("alt", nombre)

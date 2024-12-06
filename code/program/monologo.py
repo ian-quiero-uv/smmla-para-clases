@@ -1,14 +1,11 @@
 import whisper
 from whisper.utils import get_writer
 
-def main(audio, modelo):
+def main(path, audio, modelo):
 
     model = whisper.load_model(modelo)
-    #audio="data\clase.mp4"
     result = model.transcribe(audio)
 
-    #text_writer = get_writer("txt", "./whispertexts")
-    #text_writer(result, audio)
     count = 1
 
     i=0
@@ -32,7 +29,6 @@ def main(audio, modelo):
         i = i + 1
 
 
-    json_writer = get_writer("json", "./code/whisperjson")
+    json_writer = get_writer("json", path)
     json_writer(result["segments"], audio)
 
-#main("app/static/vid/test2p.mp4")

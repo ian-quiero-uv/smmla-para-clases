@@ -1,3 +1,7 @@
+//var video_id = url.charAt(url.length-1)
+var url = window.location.href;
+var path = url.split("/")
+var video_id = path[path.length-1]
 
 const transcription = null 
 
@@ -72,6 +76,7 @@ function saveTranscript(){
     let filename = url.pathname.split('/').pop().replace(".mp4", "");
 
     data = {
+        video_id: video_id,
         id: id_transcript,
         text: transcript_edit
     }

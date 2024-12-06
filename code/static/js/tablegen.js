@@ -1,5 +1,5 @@
 let currentPage = 1;
-let itemsPerPage = 1; // Cambia esto según cuántos elementos quieras por página
+let itemsPerPage = 10; // Cambia esto según cuántos elementos quieras por página
 let totalItems = 0;
 let totalPages = 0;
 let grabaciones = [];
@@ -36,6 +36,7 @@ function renderTable() {
             <td>${grabacion.practicante}</td>
             <td>${grabacion.establecimiento}</td>
             <td>${grabacion.contenido}</td>
+            <td style="display:none;">${grabacion.thumbnail}</td>
         `;
         tablebody.appendChild(fila);
     });
@@ -153,6 +154,7 @@ function renderFilteredTable(data) {
             <td>${grabacion.practicante}</td>
             <td>${grabacion.establecimiento}</td>
             <td>${grabacion.contenido}</td>
+            <td style="display:none;">${grabacion.thumbnail}</td>
         `;
         tablebody.appendChild(fila);
     });

@@ -1,5 +1,8 @@
 import copy
+
+#import json
 #import object1 as object
+
 from . import object1 as object
 
 INTERVALO = 5

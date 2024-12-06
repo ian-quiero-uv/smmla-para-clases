@@ -1,4 +1,3 @@
-import ffmpeg
 import pyrebase
 import os
 import json
@@ -8,7 +7,6 @@ import uuid
 from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, abort, jsonify
-from flask_paginate import Pagination, get_page_parameter, get_page_args
 from werkzeug.utils import secure_filename
 import requests
 
@@ -31,7 +29,9 @@ db = firebase.database()
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = './code/static/'
+app.config['UPLOAD_FOLDER'] = './code/static/uploads/'
+
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 * 1024  # 5GB
 
 app.secret_key = '3d6f1a2c-7b8e-4f3b-9c2e-8f5d4e1a0b6c'
 
@@ -91,50 +91,6 @@ def generarThumbnail(video, path, frame_num=0, width=320, height=240):
     cap.release()
     cv2.destroyAllWindows()
 
-def cambiar_resolucion(input_file, output_file, width, height):
-    """
-    Cambia la resolución de un video utilizando ffmpeg.
-
-    Args:
-        input_file (str): Ruta del archivo de video de entrada.
-        output_file (str): Ruta del archivo de video de salida.
-        width (int): Ancho de la resolución deseada.
-        height (int): Alto de la resolución deseada.
-    """
-    if input_file == output_file: #Casos donde el nombre del archivo de entrada y salida son iguales
-        
-        # Crear un nombre de archivo temporal
-        temp_file = 'temp_output.mp4'
-        
-        # Crear un objeto de entrada para el archivo de video
-        input_stream = ffmpeg.input(input_file)
-
-        # Cambiar la resolución del video
-        output_stream = ffmpeg.hflip(input_stream).filter('scale', width, height)
-
-        # Crear un objeto de salida para el archivo de video temporal
-        stream = ffmpeg.output(output_stream, temp_file, vcodec='libx264', crf=18)
-
-        # Ejecutar el comando ffmpeg
-        ffmpeg.run(stream)
-
-        # Sobrescribir el archivo de entrada con el archivo temporal
-        os.replace(temp_file, input_file)
-    else: #Casos donde el nombre del archivo de entrada y salida no son iguales
-        
-        # Crear un objeto de entrada para el archivo de video
-        input_stream = ffmpeg.input(input_file)
-
-        # Cambiar la resolución del video
-        output_stream = ffmpeg.hflip(input_stream).filter('scale', width, height)
-
-        # Crear un objeto de salida para el archivo de video
-        stream = ffmpeg.output(output_stream, output_file, vcodec='libx264', crf=18)
-
-        # Ejecutar el comando ffmpeg
-        ffmpeg.run(stream)
-
-
 
 
 @app.route('/')
@@ -180,14 +136,14 @@ def forget():
         email = request.form['email']
         try:
             auth.send_password_reset_email(email)
-            flash("Se ha enviado un correo electrónico a la cuenta proporcionada, si no recibe el correo entonces esa cuenta no esta registrada en el sistema.")
+            flash("Se ha enviado un correo electrónico a la cuenta proporcionada, si no recibe el correo entonces esa cuenta no está registrada en el sistema.")
             return redirect(url_for('login'))
         except Exception as e:  # Captura cualquier excepción
             error_message = str(e)
             flash("Ocurrió un error: " + error_message)
             return render_template('auth/forget.html')
     else:
-        flash("Advertencia: no recibira un correo de reinicio, si el correo no esta registrado")
+        flash("Advertencia: no recibirá un correo de reinicio, si el correo no está registrado.")
         return render_template('auth/forget.html')
 
 @app.route("/register", methods=['GET' , 'POST'])
@@ -203,7 +159,7 @@ def register():
             if "INVALID_LOGIN_CREDENTIALS" in str(e):
                 try:
                     user = auth.create_user_with_email_and_password(email=email, password=password)
-                    flash("Usuario creado con éxito. Ahora puedes iniciar sesion ahora")
+                    flash("Usuario creado con éxito. Ahora puedes iniciar sesión ahora")
                     return redirect(url_for('login'))
                 except Exception as e:  # Captura cualquier excepción
                     flash("Error al registrar el usuario")
@@ -232,16 +188,23 @@ def main_page():
             #Obtenemos la informacion y luego contamos las practicas registradas en el sistema
             data = []
             od_dict=db.child('grabaciones').get(session['user']).val()
+            if od_dict:
 
-            #Rellenamos data con los valores de od_dict extraidos directamente de Firebase
-            for key, value in od_dict.items():
-                data.append(value)
+                #Rellenamos data con los valores de od_dict extraidos directamente de Firebase
+                for key, value in od_dict.items():
+                    data.append(value)
+
+                for caso in data:
+                    caso['thumbnail'] = secure_filename(caso['nombre_vid'])
+            
+            else: #Si no hay registros de grabaciones, muestra el siguiente mensaje Flash
+                flash("No hay grabaciones disponibles, por favor sube una nueva grabación.")
 
             #Renderizamos la pagina
             return render_template('main_page.html', grabaciones=data, perfil=profile, foto=profile_photo)
         except Exception as e:
-            print("Error en main_page", e)
-            flash("Ocurrió un error al acceder a la página principal.")
+            print("Error: ", e)
+            flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.") #Cambiar
             return redirect(url_for('logout'))
     else:
         abort(401) #Permite que los usuarios no registrados en sesion no puedan acceder...
@@ -250,38 +213,56 @@ def main_page():
 @login_required
 def video(id):
     if 'user' in session:
+        try:
+            #Obtenemos informacion del perfil del usuario antes
+            od_profile = db.child('usuarios').order_by_child("correo").equal_to(session['email']).get(session['user']).val()
 
-        #Obtenemos informacion del perfil del usuario antes
-        od_profile = db.child('usuarios').order_by_child("correo").equal_to(session['email']).get(session['user']).val()
+            for key, value in od_profile.items():
+                profile = value
 
-        for key, value in od_profile.items():
-            profile = value
+            profile_photo = "img/users/" + profile['foto'] + ".jpg"
 
-        profile_photo = "img/users/" + profile['foto'] + ".jpg"
+            #Obtenemos la informacion del video de la respectiva id
+            od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
+            for key, value in od_dict.items():
+                data = value.get('nombre_vid')
+            
+            data = secure_filename(data)
+            #La direccion base de donde obtener todos los datos necesarios
+            base_path = app.config['UPLOAD_FOLDER'] + id + "/"
+            
+            #La direccion del video:
+            video_path = id + "/" + data + ".mp4"
 
-        #Obtenemos la informacion del video de la respectiva id
-        od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
-        for key, value in od_dict.items():
-            data = value.get('nombre_vid')
-        video_file = "vid/" + data + ".mp4"
-        json_data = []
-        json_dir = "app/static/json/" + id + ".json"
-        isFile = os.path.isfile(json_dir)
-        if (not isFile): #De no existir el archivo json con los comentarios, se crea un archivo json con 
-            with open(json_dir, "w") as fp:
-                json.dump(json_data, fp)
-        else:
-            with open (json_dir, "r") as json_file:
-                json_data = json.load(json_file)
-        #Aqui recuperaremos la data de cada json del video
-        transcript_dir = "./app/whisperjson/" + data + ".json"
-        with open (transcript_dir, "r") as mono: #Monologo
-            transcript = json.load(mono)
+            #La direccion de las notas:
+            notes_path = base_path + data + "Notes.json"
+            
+            #video_file = "vid/" + data + ".mp4"
+            
+            json_data = []
+            #json_dir = "code/static/json/" + id + ".json"
+            isFile = os.path.isfile(notes_path)
+            if (not isFile): #De no existir el archivo json con los comentarios, se crea un archivo json con 
+                with open(notes_path, "w") as fp:
+                    json.dump(json_data, fp)
+            else:
+                with open (notes_path, "r") as json_file:
+                    json_data = json.load(json_file)
+            
+            #Aqui recuperaremos la data de cada json del video
+            transcript_dir = base_path + data + ".json"
+            with open (transcript_dir, "r") as mono: #Monologo
+                transcript = json.load(mono)
 
-        with open ("./app/yolo_obj/" + data + ".json", "r") as obj: #Objetos
-            detected = json.load(obj)
+            object_dir = base_path + data + "Objects.json"
+            with open (object_dir, "r") as obj: #Objetos
+                detected = json.load(obj)
 
-        return render_template('video.html', video=video_file, json=json_data, transcript_dir=transcript_dir, transcript=transcript, objetos=detected, perfil=profile, foto=profile_photo)
+            return render_template('video.html', video=video_path, json=json_data, transcript_dir=transcript_dir, transcript=transcript, objetos=detected, perfil=profile, foto=profile_photo)
+        except Exception as e:
+            print("Error: ", e)
+            flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.")
+            return redirect(url_for('logout'))
     else:
         abort(401)
 
@@ -289,15 +270,20 @@ def video(id):
 @login_required
 def upload():
     if 'user' in session:
-        #Obtenemos informacion del perfil del usuario antes
-        od_profile = db.child('usuarios').order_by_child("correo").equal_to(session['email']).get(session['user']).val()
+        try:
+            #Obtenemos informacion del perfil del usuario antes
+            od_profile = db.child('usuarios').order_by_child("correo").equal_to(session['email']).get(session['user']).val()
 
-        for key, value in od_profile.items():
-            profile = value
+            for key, value in od_profile.items():
+                profile = value
 
-        profile_photo = "img/users/" + profile['foto'] + ".jpg"
+            profile_photo = "img/users/" + profile['foto'] + ".jpg"
 
-        return render_template('upload.html', perfil=profile, foto=profile_photo)
+            return render_template('upload.html', perfil=profile, foto=profile_photo)
+        except Exception as e:
+            #print("Error en main_page", e)
+            flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.")
+            return redirect(url_for('logout'))
     else:
         abort(401)
 
@@ -348,6 +334,11 @@ def uploader():
         #refreshToken()
         if request.method == 'POST':
             id = str(uuid.uuid4())
+
+            base_path = app.config['UPLOAD_FOLDER'] + id
+
+            os.makedirs(base_path, exist_ok=True)
+
             filename = request.form['fileName']
             practicante = request.form['nombrePrac']
             fecha = request.form['fecha']
@@ -355,18 +346,19 @@ def uploader():
             contenido = request.form['contenidoClase']
             f = request.files['fileElem']
             file_name = secure_filename(f.filename)
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], "vid/" + file_name))
-            file_uploaded = app.config['UPLOAD_FOLDER'] + 'vid/' + f.filename
-            final_file = app.config['UPLOAD_FOLDER'] + 'vid/' + filename + '.mp4'
-            thumb_path =  app.config['UPLOAD_FOLDER'] + 'img/thumbnails/' + filename + '.jpeg'
+            new_file_name = secure_filename(filename)
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], id + "/" + file_name))
+            file_uploaded = base_path + "/" + file_name
+            final_file = base_path + "/" + new_file_name + ".mp4"
+            thumb_path =  base_path + "/" + new_file_name + '.jpeg'
             data = {"establecimiento":establecimiento, "fecha":fecha, "id":id, "nombre_vid":filename, "practicante":practicante, "contenido":contenido}
             db.child('grabaciones').push(data, session['user'])
             if file_uploaded == final_file:
-                cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                #subprocess.call(['ffmpeg.exe', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) Proceso por consola, no usar.
+                #cambiar_resolucion(file_uploaded, final_file, 640, 480)
+                subprocess.call(['ffmpeg.exe', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
             else:
-                cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                #subprocess.call(['ffmpeg.exe', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) Proceso por consola, no usar.
+                #cambiar_resolucion(file_uploaded, final_file, 640, 480)
+                subprocess.call(['ffmpeg.exe', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
                 os.remove(file_uploaded)
             generarThumbnail(final_file, thumb_path)
             return redirect(url_for('analizar', id=id, model="base"))
@@ -377,8 +369,14 @@ def uploader():
 @login_required
 def jsonupload(id):
     if request.method == 'POST':
+        #Obtenemos el nombre del archivo en base a la id de este:
+        od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
+        for key, value in od_dict.items():
+            data = value.get('nombre_vid')
+
+        data = secure_filename(data)
         jsonData = request.get_json()
-        json_dir = app.config['UPLOAD_FOLDER'] + "/json/" + id + ".json"
+        json_dir = app.config['UPLOAD_FOLDER'] + id + "/" + data + "Notes.json"
         with open(json_dir, 'w') as json_write:
             json.dump(jsonData, json_write)
         return {
@@ -390,7 +388,9 @@ def jsonupload(id):
 def jsontranscript(filename):
     if request.method == 'POST':
         jsonData = request.get_json()
-        transcript_dir = "./app/whisperjson/" + filename + ".json"
+        id = jsonData["id_video"]
+        file_name = secure_filename(filename)
+        transcript_dir = app.config['UPLOAD_FOLDER'] + id + "/" + file_name + ".json"
         with open(transcript_dir, "r") as read:
             transcript = json.load(read)
         
@@ -412,16 +412,20 @@ def analizar(id, model):
     od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
     for key, value in od_dict.items():
         data = value.get('nombre_vid')
-    video_file = "vid/" + data + ".mp4"
-    detected = programa.main("./app/static/" + video_file, modelo=model)
-    dir = "app/yolo_obj/" + data + ".json" 
+    data = secure_filename(data)
+    path = app.config['UPLOAD_FOLDER'] + id + "/"
+    video_file = path + data + ".mp4"
+    dir = app.config['UPLOAD_FOLDER'] + id + "/" + data + "Objects.json" 
+    with open (dir, "w") as json_file:
+        json.dump([], json_file)
+    detected = programa.main(path=path, video=video_file, modelo=model)
     with open (dir, "w") as json_file:
         json.dump(detected, json_file)
 
     return redirect(url_for('video', id=id))
 
 
-#Generar caso con error 405 Method Not Allowed y 408 
+#Generar caso con error 405 Method Not Allowed y 413 Request Entity Too Large 
 
 def acceso_no_autorizado(error):
     flash("No tienes permiso para ver esta pagina")
@@ -439,4 +443,4 @@ def internal_error(error):
 if __name__=='__main__':
     app.register_error_handler(404, pagina_no_encontrada)
     app.register_error_handler(401, acceso_no_autorizado)
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0",debug=True, port=5000)

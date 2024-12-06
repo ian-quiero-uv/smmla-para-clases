@@ -1,8 +1,9 @@
-var url = window.location.href
-var video_id = url.charAt(url.length-1)
+var url = window.location.href;
+var path = url.split("/")
+var video_id = path[path.length-1]
 var profileUserPhoto
 var profileName
-var timeTag
+var timeTag = ""
 var newComment
 var data = []
 var element = {}
@@ -33,19 +34,32 @@ function guardarTiempo(){
 document.getElementById("btn-post").addEventListener("click", function () {
     //Cambiar para fijar al usuario que esta colocando la info
     profileUserPhoto = document.getElementById("profilePhoto").cloneNode(true);
+    //console.log(profileUserPhoto.src)
+    temp = profileUserPhoto.src.split("/")
+    userPhoto=temp[temp.length-1]
+    console.log(userPhoto)
     profileName = document.createElement("h6");
     profileName.setAttribute("class", "fw-bold text-primary mb-1");
     profileName.innerText = document.getElementById("profileName").innerText;
-    if (document.getElementById("timeTag").innerText != "-") {
-        timeTag = document.createElement("p")
+
+    var timeTagValue = document.getElementById("timeTag").innerText;
+
+    element = {};
+
+    if (timeTagValue !== "") {
+        const timeTag = document.createElement("p");
         timeTag.setAttribute("class", "text-muted small mb-0");
-        timeTag.innerText = document.getElementById("timeTag").innerText;
+        timeTag.innerText = timeTagValue;
+        element.timeTag = timeTag.innerText; // Asignar solo si no está vacío
     }
+    else {
+        element.timeTag ="";
+    }
+
     newComment = document.getElementById("new-comment").value;
     
     //console.log(profileName.innerText) --> Info del perfil
     element.name = profileName.innerText;
-    element.timeTag = timeTag.innerText;
     element.comment = newComment;
     //console.log(element)
     data.push(element)
@@ -79,9 +93,9 @@ document.getElementById("btn-post").addEventListener("click", function () {
     createCommentProfile.append(profileUserPhoto)
     const profileElement = document.createElement("div");
     profileElement.append(profileName);
-    if (document.getElementById("timeTag").innerText != "-"){
-        profileElement.append(timeTag);
-        document.getElementById("timeTag").innerText = "-"
+    if (timeTagValue != ""){
+        profileElement.append(timeTagValue);
+        timeTagValue.innerText ="";
     }
     createCommentProfile.append(profileElement);
 
@@ -111,7 +125,7 @@ function jsonScanner(alias){
         profileName = document.createElement("h6");
         profileName.setAttribute("class", "fw-bold text-primary mb-1");
         profileName.innerText = data[i].name;
-        if (data[i].timeTag != "-"){
+        if (data[i].timeTag != ""){
             timeTag = document.createElement("p")
             timeTag.setAttribute("class", "text-muted small mb-0");
             timeTag.innerText = data[i].timeTag;
@@ -126,7 +140,7 @@ function jsonScanner(alias){
         createCommentProfile.setAttribute("class", "d-flex flex-start align-items-center border-bottom border-1")
         const profileElement = document.createElement("div");
         profileElement.append(profileName);
-        if (data[i].timeTag != "-"){
+        if (data[i].timeTag != ""){
             profileElement.append(timeTag);
         }
         createCommentProfile.append(profileElement);

@@ -3,9 +3,9 @@ from . import monologo
 from . import object1
 from . import object2
 
-def main(video, modelo):
+def main(path, video, modelo):
     #Primero llamaremos a monologo.py para que genere el json con los datos del video.
-    monologo.main(video, modelo)
+    monologo.main(path=path, audio=video, modelo=modelo)
 
     #Ahora llamaremos a objects.py que retronara una matriz con todos los objetos detectados que no sean personas, luego filtramos en base a la cantidad de cuadros de diferencia y los valores de las bboxes de cada objeto.
     collection = object2.main(video)     
@@ -22,4 +22,3 @@ def main(video, modelo):
         obj_dict.append(element)
     
     return obj_dict
-

@@ -31,13 +31,17 @@ function unhighlight(e) {
     dropArea.classList.remove("highlight");
 }
 
+dropArea.addEventListener("drop", handleDrop, false);
+
 function handleDrop(e) {
     let dt = e.dataTransfer;
     let files = dt.files;
     handleFiles(files);
+
+    fileElem.files = files;
 }
 
-function handleFiles(files) {
+function handleFiles(files) { // <--- Probar y arreglar esto.
     [...files].forEach(uploadFile);
 }
 
@@ -58,7 +62,7 @@ function uploadFile(file) {
 
             // Creamos la imagen del thumbnail
             thumbnailImage.src = canvas.toDataURL(); // Convertimos el canvas a una URL de datos
- thumbnailImage.classList.remove("d-none"); // Mostramos el thumbnail
+            thumbnailImage.classList.remove("d-none"); // Mostramos el thumbnail
 
             // Ocultamos el ícono
             thumbnailIcon.classList.add("d-none"); // Ocultamos el ícono
@@ -66,12 +70,17 @@ function uploadFile(file) {
             // Actualizamos el nombre del archivo
             fileNameElement.textContent = file.name; // Mostramos el nombre del archivo
 
+            //fileElem.setCustomValidity('');
+            //fileElem.classList.remove('is-invalid');
             // Liberamos el objeto URL URL.revokeObjectURL(video.src);
+        URL.revokeObjectURL(video.src);
         });
 
         video.load(); // Cargamos el video
     } else {
         alert("Por favor, sube un archivo de video en formato MP4."); // Mensaje si no es un video MP4
+        fileElem.setCustomValidity(''); // Resetea el mensaje de error
+        fileElem.classList.add('is-invalid'); // Añade la clase de error
     }
 }
 
