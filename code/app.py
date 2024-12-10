@@ -355,10 +355,10 @@ def uploader():
             db.child('grabaciones').push(data, session['user'])
             if file_uploaded == final_file:
                 #cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                subprocess.call(['ffmpeg.exe', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
+                subprocess.call(['ffmpeg', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
             else:
                 #cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                subprocess.call(['ffmpeg.exe', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
+                subprocess.call(['ffmpeg', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
                 os.remove(file_uploaded)
             generarThumbnail(final_file, thumb_path)
             return redirect(url_for('analizar', id=id, model="base"))
@@ -443,4 +443,4 @@ def internal_error(error):
 if __name__=='__main__':
     app.register_error_handler(404, pagina_no_encontrada)
     app.register_error_handler(401, acceso_no_autorizado)
-    app.run(host="0.0.0.0",debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=False, port=5000)

@@ -1,9 +1,19 @@
+import os
 import whisper
 from whisper.utils import get_writer
 
 def main(path, audio, modelo):
 
-    model = whisper.load_model(modelo)
+    # Establecer la variable de entorno para la carpeta de caché
+    os.environ["WHISPER_CACHE_DIR"] = "/app/whisper_models"
+
+    try:
+        model = whisper.load_model(modelo)
+    except Exception as e:
+        print(f"Ocurrió un error al cargar el modelo: {e}")
+        return 0 # Salir de la función si no se puede cargar el modelo
+
+
     result = model.transcribe(audio)
 
     count = 1

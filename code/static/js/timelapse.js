@@ -9,6 +9,10 @@ function timetables(transcript){
 
     // append the svg object to the body of the page
     var svg1 = d3.select("#d3_1")
+    .append("h4")
+        .text("Transcripción")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
     .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -59,7 +63,7 @@ function timetables(transcript){
           .style("opacity", 0)
     }
 
-    var boxHeight = 40
+    var boxHeight = 10
     svg1
         .selectAll("boxes")
         .data(data)
@@ -73,7 +77,7 @@ function timetables(transcript){
                 return x(time_lapse)
             })
             .attr('stroke', 'black')
-            .attr('fill', '#69a3b2')
+            .attr('fill', 'black')
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseleave", mouseleave);
@@ -128,6 +132,10 @@ function objectTables(objetos){
         .range(d3.schemeCategory10); // or any other color scheme
 
     var svg2 = d3.select("#d3_2")
+    .append("h4")
+        .text("Artefactos")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
     .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -222,38 +230,5 @@ function objectTables(objetos){
         });
     });
     
-    /*groupedData.selectAll("circle")
-        .on("mouseover", mouseover_2)
-        .on("mousemove", mousemove_2)
-        .on("mouseleave", mouseleave_2);*/
 
-/*
-    svg2.selectAll("path")
-        .data(sumstat)
-        .join("path")
-            .attr('fill', 'none')
-            .attr('stroke-width', 1.5)
-            .attr('stroke', d => colorScale(d[0]))
-            .attr("d", d => {
-                return d3.line()
-                    .x(d => x2(d.inicio))
-                    .y(d => y(d.conf))
-                    (d[1])
-            });
-*/
-
-    
-/*
-    svg2.append("g")
-     .selectAll("dot")
-     .data(groupedData)
-     .enter()
-     .append("circle")
-        .attr("cx", (d,i) => {return x2(d.values[i].inicio)})
-        .attr("cy", (d,i) => {return y(d.values[i].conf)})
-        .attr("r", 5)
-        .attr("fill", (d,i) => colorScale(d.name))
-        .on("mouseover", mouseover_2)
-        .on("mousemove", mousemove_2)
-        .on("mouseleave", mouseleave_2);*/
 }
