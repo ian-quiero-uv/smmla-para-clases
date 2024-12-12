@@ -71,7 +71,7 @@ ENV WHISPER_CACHE_DIR=/app/whisper_models
 USER appuser
 
 # Expose the port that the application listens on.
-EXPOSE 5000
+EXPOSE 80
 
 # Run the application.
 CMD python code/app.py
