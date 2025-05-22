@@ -1,9 +1,5 @@
-html,
-#navbar{
-    background-color:  rgba(27,174,207,1);
-    width: auto;
-}
-
-h2 {
-    color: white;
+.navbar {
+    position: relative;
+    z-index: 9999;
+    margin-left: 0;
 }

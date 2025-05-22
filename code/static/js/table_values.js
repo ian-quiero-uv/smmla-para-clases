@@ -39,14 +39,53 @@ function reAnalize(modelo) {
 const reAnalyzeButton = document.getElementById('reAnalyzeButton');
 
 reAnalyzeButton.addEventListener('click', () => {
-    const radios = document.getElementsByName('inlineRadioOptions');
-    let selectedValue;
-    for (const radio of radios) {
-        if (radio.checked) {
-            selectedValue = radio.value;
-            break;
+    let modeloSeleccionado = 'base';
+    slider.noUiSlider.on('update', function (values, handle) {
+        const index = parseInt(values[handle], 10);
+        modeloSeleccionado = modelos[index] || '';
+    })
+
+    console.log(modeloSeleccionado);
+
+    reAnalize(modeloSeleccionado);
+});
+
+const modelos = ['tiny', 'base', 'small', 'medium', 'large'];
+
+const slider = document.getElementById('slider');
+
+noUiSlider.create(slider, {
+    start: 1,
+    connect: false,
+    step: 1,
+    range: {
+        min: 0,
+        max: modelos.length - 1,
+    },
+    format: {
+        // Convertir dato entre índice y valor:
+        to: value => Number(value).toFixed(0),
+        from: value => Number(value).toFixed(0)
+    },
+    tooltips: {
+        to: function(value) {
+          const index = Math.round(value);
+          return modelos[index] || '';
+        },
+        from: function(value) {
+          return modelos.indexOf(value);
+        }
+    },
+    pips: {
+        mode: 'positions',
+        values: [0, 100],
+        density: 100,
+        format: {
+            to: function(value) {
+                if (value === 0) return '(más rápido)';
+                if (value === modelos.length - 1) return '(más lento)';
+                return '';
+            },
         }
     }
-
-    reAnalize(selectedValue)
 });

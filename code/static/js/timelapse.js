@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function() {
+    window.Plyr && new Plyr(".js-player");
+});
+
 function timetables(transcript){
     data = JSON.parse(transcript)
 
@@ -8,7 +12,7 @@ function timetables(transcript){
         height = 160 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
-    var svg1 = d3.select("#d3_1")
+    var svg1 = d3.select("#transcription_chart")
     .append("h4")
         .text("Transcripción")
         .attr("width", width + margin.left + margin.right)
@@ -33,7 +37,7 @@ function timetables(transcript){
             .text("Tiempo")
             .style("font-size", "13px");
 
-    var tooltip = d3.select("#d3_1")
+    var tooltip = d3.select("#transcription_chart")
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -131,7 +135,7 @@ function objectTables(objetos){
         .domain(res) // use the objects array as the domain
         .range(d3.schemeCategory10); // or any other color scheme
 
-    var svg2 = d3.select("#d3_2")
+    var svg2 = d3.select("#object_chart")
     .append("h4")
         .text("Artefactos")
         .attr("width", width + margin.left + margin.right)
@@ -170,7 +174,7 @@ function objectTables(objetos){
         .style("text-anchor", "middle")
         .attr("transform", "rotate(-90)");
 
-    var tooltip_2 = d3.select("#d3_2")
+    var tooltip_2 = d3.select("#object_chart")
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -230,5 +234,61 @@ function objectTables(objetos){
         });
     });
     
+    /*groupedData.selectAll("circle")
+        .on("mouseover", mouseover_2)
+        .on("mousemove", mousemove_2)
+        .on("mouseleave", mouseleave_2);*/
 
+/*
+    svg2.selectAll("path")
+        .data(sumstat)
+        .join("path")
+            .attr('fill', 'none')
+            .attr('stroke-width', 1.5)
+            .attr('stroke', d => colorScale(d[0]))
+            .attr("d", d => {
+                return d3.line()
+                    .x(d => x2(d.inicio))
+                    .y(d => y(d.conf))
+                    (d[1])
+            });
+*/
+
+    
+/*
+    svg2.append("g")
+     .selectAll("dot")
+     .data(groupedData)
+     .enter()
+     .append("circle")
+        .attr("cx", (d,i) => {return x2(d.values[i].inicio)})
+        .attr("cy", (d,i) => {return y(d.values[i].conf)})
+        .attr("r", 5)
+        .attr("fill", (d,i) => colorScale(d.name))
+        .on("mouseover", mouseover_2)
+        .on("mousemove", mousemove_2)
+        .on("mouseleave", mouseleave_2);*/
+}
+
+function transcriptBar(transcript){
+    const data = JSON.parse(transcript);
+
+    options = {
+        chart: {
+            type: 'rangeBar',
+            height: 350,
+            toolbar: {
+                show: true
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '50%',
+                dataLabels: {
+                    position: 'top'
+                }
+            }
+        },
+    }
 }

@@ -1,48 +1,120 @@
-{% extends './layout.html' %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sistema de Análisis Multimodal para Prácticas Docentes - Registrarse</title>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler.css') }}?1744816591" rel="stylesheet" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PLUGINS STYLES -->
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-flags.css') }}?1744816591" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-socials.css') }}?1744816591" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-payments.css') }}?1744816591" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-vendors.css') }}?1744816591" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-marketing.css') }}?1744816591" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler-themes.css') }}?1744816591" rel="stylesheet" />
+    <!-- END PLUGINS STYLES -->
+    <!-- BEGIN DEMO STYLES -->
+    <link href="{{ url_for('static', filename='assets/preview/css/demo.css') }}?1744816591" rel="stylesheet" />
+    <!-- END DEMO STYLES -->
+  </head>
+  <body>
+    <!-- BEGIN GLOBAL THEME SCRIPT -->
+    <script src="{{ url_for('static', filename='assets/dist/js/tabler-theme.min.js') }}?1744816591"></script>
+    <!-- END GLOBAL THEME SCRIPT -->
 
-{% block title %}Sistema de Análisis Multimodal para Prácticas Docentes{% endblock %}
+     {% with messages = get_flashed_messages() %}
 
-{% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-{% endblock %}
-
-{% block body %}
-
-<main>
-  <form class="form-signin mx-auto my-5 text-center" method="POST">
-    <h1 class="h3 mb-3 fw-normal">Ingrese sus datos de registro</h1>
-
-    {% with messages = get_flashed_messages() %}
-
-    {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-    {% endif %}
-  
-    {% endwith %}
-
-    <div class="form-floating">
-      <input type="email" class="form-control" id="floatingInput" name="email" placeholder="name@example.com" required>
-      <label for="floatingInput">Correo Electrónico</label>
-      <div class="invalid-feedback">
-        Ingresa un correo electrónico.
-      </div>
-    </div>
-    <div class="form-floating mt-3">
-        <input type="password" class="form-control" name="password" placeholder="Password" required>
-        <label for="floatingPassword">Contraseña</label>
-        <div class="invalid-feedback">
-          Ingresa una contraseña.
+     {% if messages %}
+      {% for message in messages %}
+      <div class="row justify-content-end my-4 mx-1">
+        <div class="col-auto">
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
         </div>
-    </div>
-    <button class="btn btn-primary w-100 py-2 my-3" type="submit">Registrarse</button>
-    <a class="btn btn-secondary w-100 py-2 my-3" href="/login">Volver al inicio de sesión</a>
-    <p class="mt-5 mb-3 text-body-secondary">Universidad de Valparaíso</p>
-  </form>
-</main>
+      </div>
+      {% endfor %}
+      {% endif %}
 
-{% endblock %}
+      {% endwith %}
+
+    <div class="page page-center">
+      <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+          <!-- BEGIN NAVBAR LOGO -->
+           <img src="{{ url_for('static', filename='img/uv_azul.png') }}" alt="Universidad de Valparaiso Chile" width="50%" height="50%"/>
+           <h1 class="mt-3">Sistema de Análisis Multimodal para Prácticas Docentes</h1>
+          <!-- END NAVBAR LOGO -->
+        </div>
+        <form class="card card-md" action="/register" method="POST" autocomplete="off" novalidate>
+          <div class="card-body">
+            <h2 class="card-title text-center mb-4">Ingrese sus datos de registro</h2>
+            <div class="mb-3">
+              <label class="form-label">Correo Electrónico</label>
+              <input type="email" id="floatingInput" name="email" class="form-control" placeholder="Enter email" required/>
+              <div class="invalid-feedback">
+                Ingresa un correo electrónico.
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <div class="input-group input-group-flat">
+                <input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off" required/>
+                <span class="input-group-text">
+                </span>
+                <div class="invalid-feedback">
+                  Ingresa una contraseña.
+                </div>
+              </div>
+            </div>
+            <div class="form-footer">
+              <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </div>
+          </div>
+        </form>
+        <div class="text-center text-secondary mt-3">¿Ya tienes cuenta?  <a href="/login" tabindex="-1">Volver al inicio de sesión</a></div>
+        <div class="text-center align-items-center mt-3"><p class="text-secondary">Universidad de Valparaíso</p></div>
+      </div>
+    </div>
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="{{ url_for('static', filename='assets/dist/js/tabler.min.js') }}?1744816591" defer></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <!-- BEGIN DEMO SCRIPTS -->
+    <script src="{{ url_for('static', filename='assets/preview/js/demo.min.js') }}?1744816591" defer></script>
+    <!-- END DEMO SCRIPTS -->
+    <!-- BEGIN PAGE SCRIPTS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var themeConfig = {
+          theme: "light",
+          "theme-base": "gray",
+          "theme-font": "sans-serif",
+          "theme-primary": "blue",
+          "theme-radius": "1",
+        };
+        var url = new URL(window.location);
+        var form = document.getElementById("offcanvasSettings");
+        var resetButton = document.getElementById("reset-changes");
+        var checkItems = function () {
+          for (var key in themeConfig) {
+            var value = window.localStorage["tabler-" + key] || themeConfig[key];
+            if (!!value) {
+              var radios = form.querySelectorAll(`[name="${key}"]`);
+              if (!!radios) {
+                radios.forEach((radio) => {
+                  radio.checked = radio.value === value;
+                });
+              }
+            }
+          }
+        };
+        checkItems();
+      });
+    </script>
+    <!-- END PAGE SCRIPTS -->
+  </body>
+</html>

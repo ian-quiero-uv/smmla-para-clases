@@ -3,7 +3,7 @@ var path = url.split("/")
 var video_id = path[path.length-1]
 var profileUserPhoto
 var profileName
-var timeTag = ""
+var timeTag
 var newComment
 var data = []
 var element = {}
@@ -34,39 +34,26 @@ function guardarTiempo(){
 document.getElementById("btn-post").addEventListener("click", function () {
     //Cambiar para fijar al usuario que esta colocando la info
     profileUserPhoto = document.getElementById("profilePhoto").cloneNode(true);
-    //console.log(profileUserPhoto.src)
-    temp = profileUserPhoto.src.split("/")
-    userPhoto=temp[temp.length-1]
-    console.log(userPhoto)
-    profileName = document.createElement("h6");
-    profileName.setAttribute("class", "fw-bold text-primary mb-1");
+    profileName = document.createElement("h4");
+    profileName.setAttribute("class", "text-primary mb-1");
     profileName.innerText = document.getElementById("profileName").innerText;
-
-    var timeTagValue = document.getElementById("timeTag").innerText;
-
-    element = {};
-
-    if (timeTagValue !== "") {
-        const timeTag = document.createElement("p");
-        timeTag.setAttribute("class", "text-muted small mb-0");
-        timeTag.innerText = timeTagValue;
-        element.timeTag = timeTag.innerText; // Asignar solo si no está vacío
+    if (document.getElementById("timeTag").innerText != "-") {
+        timeTag = document.createElement("p");
+        timeTag.setAttribute("class", "lead");
+        timeTag.innerText = document.getElementById("timeTag").innerText;
     }
-    else {
-        element.timeTag ="";
-    }
-
     newComment = document.getElementById("new-comment").value;
     
     //console.log(profileName.innerText) --> Info del perfil
     element.name = profileName.innerText;
+    element.timeTag = timeTag.innerText;
     element.comment = newComment;
     //console.log(element)
     data.push(element)
     element = {}
     //console.log(data)
 
-
+    
     fetch(`/jsonupload/${video_id}`, {
         headers : {
             'Content-Type' : 'application/json'
@@ -77,9 +64,9 @@ document.getElementById("btn-post").addEventListener("click", function () {
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
-
-    profileUserPhoto.setAttribute("width", "25");
-    profileUserPhoto.setAttribute("height", "25");
+    
+    profileUserPhoto.setAttribute("width", "50");
+    profileUserPhoto.setAttribute("height", "50");
 
     //const profileContainer = document.getElementById("profileInfo");
 
@@ -89,19 +76,31 @@ document.getElementById("btn-post").addEventListener("click", function () {
 
     //Creacion del div con los datos del usuario
     const createCommentProfile = document.createElement("div")
-    createCommentProfile.setAttribute("class", "d-flex flex-start align-items-center border-bottom border-1")
-    createCommentProfile.append(profileUserPhoto)
+    createCommentProfile.setAttribute("class", "mb-2 border-black border-3 border-bottom")
+    const profileRow = document.createElement('div')
+    profileRow.setAttribute("class", "row border-bottom border-1");
+    //Foto de perfil
+    const profilePhotoCol = document.createElement("div")
+    profilePhotoCol.setAttribute("class", "col-2 mb-3 border-end");
+    profilePhotoCol.append(profileUserPhoto);
+    profileRow.append(profilePhotoCol);
+    //Nombre y tag de tiempo si hay
     const profileElement = document.createElement("div");
+    profileElement.setAttribute("class", "col-10");
     profileElement.append(profileName);
-    if (timeTagValue != ""){
-        profileElement.append(timeTagValue);
-        timeTagValue.innerText ="";
+    if (document.getElementById("timeTag").innerText != "-"){
+        profileElement.append(timeTag);
+        document.getElementById("timeTag").innerText = "-"
     }
-    createCommentProfile.append(profileElement);
+    profileRow.append(profileElement);
+    //Añadimos los datos al contenedor de comentarios
+    createCommentProfile.append(profileRow);
 
+    //Creamos el div de los comentarios
     const createCommentElement = document.createElement("div");
-    createCommentElement.setAttribute("class", "mt-3 mb-4 pb-2 border-bottom border-2 border-black")
+    createCommentElement.setAttribute("class", "mt-1")
     const commentElement = document.createElement("p");
+    commentElement.setAttribute("class", "ml-1");
     commentElement.innerText = newComment;
     createCommentElement.append(commentElement);
 
@@ -122,12 +121,12 @@ function jsonScanner(alias){
 
     for (let i=0; i<data.length; i++){
         //Creamos los tag HTML y con su formato para el usuario y el tag temporal
-        profileName = document.createElement("h6");
-        profileName.setAttribute("class", "fw-bold text-primary mb-1");
+        profileName = document.createElement("h4");
+        profileName.setAttribute("class", "text-primary mb-1");
         profileName.innerText = data[i].name;
-        if (data[i].timeTag != ""){
+        if (data[i].timeTag != "-"){
             timeTag = document.createElement("p")
-            timeTag.setAttribute("class", "text-muted small mb-0");
+            timeTag.setAttribute("class", "lead");
             timeTag.innerText = data[i].timeTag;
         }
         newComment = data[i].comment;
@@ -137,17 +136,23 @@ function jsonScanner(alias){
         const saveCommentBox = document.createDocumentFragment();
 
         const createCommentProfile = document.createElement("div")
-        createCommentProfile.setAttribute("class", "d-flex flex-start align-items-center border-bottom border-1")
+        createCommentProfile.setAttribute("class", "mb-2 border-black border-3 border-bottom")
+        const profileRow = document.createElement('div')
+        profileRow.setAttribute("class", "row border-bottom border-1");
+        //
         const profileElement = document.createElement("div");
+        profileElement.setAttribute("class", "col-10");
         profileElement.append(profileName);
-        if (data[i].timeTag != ""){
+        if (data[i].timeTag != "-"){
             profileElement.append(timeTag);
         }
-        createCommentProfile.append(profileElement);
+        profileRow.append(profileElement);
+        createCommentProfile.append(profileRow);
 
         const createCommentElement = document.createElement("div");
-        createCommentElement.setAttribute("class", "mt-3 mb-4 pb-2 border-bottom border-2 border-black")
+        createCommentElement.setAttribute("class", "mt-1")
         const commentElement = document.createElement("p");
+        commentElement.setAttribute("class", "ml-1");
         commentElement.innerText = newComment;
         createCommentElement.append(commentElement);
 

@@ -1,16 +1,35 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
+version: '28.1.1'
 
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   server:
-    image: sist-mmla-para-prac:1.0
+    image: sist-mmla-para-prac:latest
     build:
       context: .
+      dockerfile: Dockerfile
+      args:
+       PYTHON_VERSION: 3.12.6
+       UID: 10001
     ports:
       - 80:80
+    volumes:
+      - .:/app
+      - app_uploads:/app/code/static/uploads
+      - app_cache:/app/.cache
+      - whisper_models:/app/whisper_models
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+      WHISPER_CACHE_DIR: /app/whisper_models
+      # - FIREBASE_API_KEY=tu_api_key
+      # - FIREBASE_AUTH_DOMAIN=tu_auth_domain
+      # - FIREBASE_DATABASE_URL=tu_database_url
+      # - FIREBASE_PROJECT_ID=tu_project_id
+      # - FIREBASE_STORAGE_BUCKET=tu_storage_bucket
+      # - FIREBASE_MESSAGING_SENDER_ID=tu_messaging_sender_id
+      # - FIREBASE_APP_ID=tu_app_id
+    user: appuser
+
+volumes:
+  app_uploads:
+  app_cache:
+  whisper_models:

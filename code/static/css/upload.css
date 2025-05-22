@@ -30,3 +30,21 @@ body {
     height: 200px;
     margin: 3px;
 }
+
+.dropzone {
+      border: 2px dashed #ced4da;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+}
+
+.dropzone.dragover {
+    background-color: #f1f3f5;
+}
+
+#dropzone-content img {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 0.5rem;
+}
