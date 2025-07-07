@@ -75,34 +75,6 @@
     <script src="{{ url_for('static', filename='assets/preview/js/demo.min.js') }}?1744816591" defer></script>
     <!-- END DEMO SCRIPTS -->
     <!-- BEGIN PAGE SCRIPTS -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var themeConfig = {
-          theme: "light",
-          "theme-base": "gray",
-          "theme-font": "sans-serif",
-          "theme-primary": "blue",
-          "theme-radius": "1",
-        };
-        var url = new URL(window.location);
-        var form = document.getElementById("offcanvasSettings");
-        var resetButton = document.getElementById("reset-changes");
-        var checkItems = function () {
-          for (var key in themeConfig) {
-            var value = window.localStorage["tabler-" + key] || themeConfig[key];
-            if (!!value) {
-              var radios = form.querySelectorAll(`[name="${key}"]`);
-              if (!!radios) {
-                radios.forEach((radio) => {
-                  radio.checked = radio.value === value;
-                });
-              }
-            }
-          }
-        };
-        checkItems();
-      });
-    </script>
     <!-- END PAGE SCRIPTS -->
   </body>
 </html>

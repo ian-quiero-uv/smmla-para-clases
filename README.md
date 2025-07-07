@@ -42,3 +42,11 @@ Sistema de aprendizaje autónomo de elementos multimodales para docentes.
     + `openai-whisper`
 
 - Se incluyo un ***ChangeLog*** en `README.md`, de ahora en adelante se utilizará para indicar los cambios realizados al sistema.
+
+## Versión: 1.1.1 (*30/06/2025*)
+
+- Se implemento un gestor de colas con *SweetAlert2* tanto para las cargas de las grabaciones al sistema como para los análisis con IA.
+- Se completo el proceso de registro para abarcar Nombre, Rut y Foto de Perfil (opcional).
+- Se creo una página de Guía que explica el funcionamiento del sistema para los usuarios (Esta se accede por la página de Login).
+- Se implemento **Nginx** con **gunicorn** para montaje como servidor y proxy inverso.
+- Se creo la carpeta `logs` con registros de **Nginx**, esto se almacena como volumen en Docker para tener registros de accesos y errores mientras el container este activo.

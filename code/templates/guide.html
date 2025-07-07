@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es" style="margin : 0">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Sistema de Análisis Multimodal para Prácticas Docentes - Guía de Uso</title>
+    <!-- Bootstrap 5 -->
+    <link href="{{ url_for('static', filename='assets/dist/css/tabler.min.css') }}" rel="stylesheet">
+    <!-- Themify Icons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='themify-icons/themify-icons.css') }}"> <!-- Por el momento, despues se eligira Themify -->
+    <!-- Font Awesome para fa-camara en upload -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/css/solid.css') }}">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/nouislider/dist/nouislider.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/plyr/dist/plyr.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/dropzone/dist/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/apexcharts/dist/apexcharts.css') }}">
+    {% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/guide.css') }}">
+    {% endblock %}
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='assets/dist/js/tabler.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/libs/plyr/dist/plyr.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/libs/nouislider/dist/nouislider.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/libs/dropzone/dist/dropzone-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+    <!-- D3.js -->
+    <script src="{{ url_for('static', filename='js/d3.v7.js') }}"></script>
+    <!-- SweetAlerts2 -->
+    <script src="{{ url_for('static', filename='assets/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+
+</head>
+
+<body>
+    <header class="navbar navbar-expand-md d-print-none" id="navbar">
+        <div class="container-xl">
+            <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                <div class="row d-flex align-items-center">
+                    <div class="col-4">
+                        <img src="{{ url_for('static', filename='img/uv_blanco.png') }}" alt="Universidad de Valparaiso Chile" width="150">
+                    </div>
+                    <div class="col-4">
+                        <h1 class="text-white text-center">Sistema de Análisis Multimodal para Prácticas Docentes</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-end align-items-center">
+                <a href="/login" class="btn btn-blue" aria-expanded="false">
+                    <span class="px-2 fw-bold">
+                        <i class="ti ti-arrow-left"></i>
+                        Regresar al inicio de sesión
+                    </span>                        
+                </a>
+            </div>
+        </div>
+    </header>
+    <!--  -->
+    <main>
+        <div class="container-xl">
+            <h2 class="my-3">Guía de uso del Sistema</h2>
+            <!-- Iniciar Sesión  -->
+            <div class="card mb-3" id="login-in-system">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como iniciar sesión en el Sistema?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Ingresar sus datos.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/login.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>Al acceder al sistema, ingrese sus datos de correo electrónico y contraseña, luego oprime en Ingresar.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4 class=""><strong>Paso 2: Acceder a la página principal.</strong></h4>
+                    <div class="row align-items-center ">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/main_page.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Si tiene un usuario registrado en el sistema, este autenticará al usuario y luego redirigirá a la página principal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Registrarse -->
+            <div class="card mb-3" id="register-on-the-system">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <h3 class="card-title">¿Como registrarse en el Sistema?</h3>
+                        <p class="card-subtitle text-danger"><strong>¡Si ingresa un correo electrónico ya registrado en el sistema, este proceso será rechazado!</strong></p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Acceder a la página de registro.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/login.register.png') }}" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>Desde la página de ingreso al sistema, accede a la página de registro por el texto de "Registrarse".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Ingresar los datos solicitados.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/register.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de registro, ingresa los datos solicitados por cada campo, los campos de nombre, RUT, correo y contraseña son obligatorios.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Ingresar una foto de perfil (opcional) y registrarse.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/register_1.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                            <img src="{{ url_for('static', filename='img/guide/register_2.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>Con los datos de registro ya ingresados, puede ingresar una foto de perfil como un campo opcional.</p>
+                            <p>Luego haga clic en: "Registrarse", el sistema verificara si el correo electrónico no está registrado, luego registrara el correo, almacenara los datos del usuario y redirigirá a la página principal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recuperar contraseña -->
+            <div class="card mb-3" id="restore-password">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <h3 class="card-title">Olvide mi contraseña. ¿Como recuperarla?</h3>
+                        <p class="text-warning"><strong>Si ingresa un correo que no esté registrado en el sistema, no recibirá el correo de recuperación.</strong></p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Acceder a la página de recuperación.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/login.forgot.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>Desde la página de ingreso al sistema, accede a la página de recuperación por el texto de "Olvide mi contraseña".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Ingresar un correo electrónico para recuperar la contraseña.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/forget_1.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>En el campo de correo electrónico, ingrese su correo y oprima el botón "Recuperar Contraseña".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Acceder a su correo electrónico.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/forget.mail.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Acceda a su correo electrónico, ahí debería encontrar un correo enviado por Firebase con un enlace para recuperar la contraseña.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Subir Archivo -->
+            <div class="card mb-3" id="upload-video">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como subir una grabación?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Acceder a la página de cargas.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/main_page.upload.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Desde la página principal, oprima el botón de "Subir Archivo".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Ingresar los datos de la grabación y subir la grabación.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/upload.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Al llegar a la página, ingrese los datos solicitados de la grabación, en los campos a la izquierda.</p>
+                            <p>En el campo de la derecha, arrastre la grabación en formato MP4, también puede hacer clic y elegir con el seleccionador de archivos del navegador.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Subir la grabación de la clase.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/upload.file.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Con los datos y la grabación ya ingresados, haga clic en "Subir Video".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 4: Esperar la subida y análisis de la grabación.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/upload.process.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>El sistema comenzara el proceso de subida, y análisis de la grabación, para luego redirigir a la pantalla de la grabación.</p>
+                            <p class="text-success">Nota: La transcripción del monologo del practicante, se realiza con un modelo de IA fijo, esto se puede cambiar desde la página principal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Re-analizar -->
+            <div class="card mb-3" id="reanalyze-transcription">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como cambiar el análisis de la transcripción?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Escoger una grabación.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/main_page.reAnalyze.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página principal elige una grabación de la tabla, luego selecciona el botón de “Cambiar Análisis”.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Elegir el modelo de IA para la transcripción.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/reAnalyze.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En la pantalla, elige un modelo de IA para realizar la transcripción, para eso mueve el dial por cada modelo.</p>
+                            <p class="text-success">Nota: El cambio de análisis solo abarca para la transcripción del audio de la grabación.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Esperar el proceso de analisis.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/reAnalyze.process.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Una vez seleccionado el modelo de IA para la transcripción, oprime en “Cambiar Análisis”.</p>
+                            <p>El sistema iniciará el proceso de análisis de la grabación, y luego redirigirá a la pantalla de análisis de la grabación.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Acceder a la grabación -->
+            <div class="card mb-3" id="access-into-video">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como acceder a las grabaciones guardadas?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Escoger una grabación.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/main_page.video_2.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página principal elige una grabación de la tabla, luego selecciona el botón de “Ver video”.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Reproducir la grabación y ver las tablas.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video_1.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                            <img src="{{ url_for('static', filename='img/guide/video_2.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>Al oprimir el botón, serás redirigido a la página con la grabación.</p>
+                            <p>En la página hay tres pestañas, la pestaña principal contiene el video de la grabación, con graficas del análisis realizado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Escribir una Nota -->
+            <div class="card mb-3" id="register-a-note">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como registrar una nota asociada a la grabación?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Escribir en la caja de texto.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video.notes_1.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de la grabación, hay un recuadro a la derecha que dice Notas.</p>
+                            <p>Al final de ese recuadro, hay una caja de texto donde se puede escribir un nota o comentario asociado.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Registrar Nota.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video.notes_2.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Una vez la nota escrita, oprime el botón "Guardar Comentario", y este se registrará en el marco superior con sus datos de perfil.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Registrar tiempo (opcional).</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video.notes_3.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Para registrar un momento especifico en la grabación, pausa el video y oprime el botón "Guardar tiempo" y al registrar la nota, también se registrará ese momento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Acceder a las pestañas de transcripcion y artefactos -->
+            <div class="card mb-3" id="access-into-tabs">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como acceder a las pestañas de Transcripción y Artefactos?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Acceder a la pestaña de Transcripción.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video.transcrip.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                            <img src="{{ url_for('static', filename='img/guide/transcript.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de la grabación, oprime la pestaña de Transcripción, con una tabla que tiene el registro de todas las transcripciones registradas.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Acceder a la pestaña de Artefactos.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/video.artefac.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                            <img src="{{ url_for('static', filename='img/guide/artefact.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de la grabación, oprime la pestaña de Artefactos, con una tabla que tiene el registro de todos los artefactos registrados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Editar la transcripción -->
+            <div class="card mb-3" id="edit-transcript">
+                <div class="card-header">
+                    <h3 class="card-title">La transcripción no es precisa, ¿Como la edito?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Oprimir un registro de la tabla.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/transcript.edit_1.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Si ves una transcripción mal escrita o incorrecta, puedes oprimir un registro dentro de la tabla.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Editar la transcripción.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/transcript.edit_2.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Aparecerá un recuadro con la transcripción, dentro de este puedes escribir y modificar la transcripción.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Guardar la transcripción.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/transcript.edit_3.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Con el texto ya editado, oprime el botón "Guardar y Cerrar", el sistema guardara el cambio en el registro de la transcripción.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Guardar la transcripción -->
+            <div class="card mb-3" id="save-transcript">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como puedo descargar el registro?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Descargar la transcripción.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/transcript.save.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de la grabación oprime la pestaña de Transcripción, al final de la tabla está el botón “Descargar Texto”, para descargar el registro de las transcripciones.</p>
+                            <p class="text-success">Nota: El archivo a descargar está en formato CSV, el cual es compatible con aplicaciones de hoja de cálculo (Ej: Excel).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cerrar la sesión usuario del sistema -->
+            <div class="card mb-3" id="logout">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como puedo cerrar mi sesión y salir del Sistema?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Oprimir el botón del perfil.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/main_page.drop.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>En cualquiera de las páginas del sistema, oprima el botón de la esquina derecha superior.</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 2: Oprimir el módulo de cierre de sesión.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/logout.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>Aparecerán dos opciones relacionadas con la información del perfil y el cierre de sesión, oprima la opción de "Cerrar Sesión".</p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <h4><strong>Paso 3: Confirmar el cierre de sesión.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/logout_2.png') }}"  alt="Imagen de recuperación" class="img-reducida">
+                        </div>
+                        <div class="col-6">
+                            <p>El sistema preguntara si desea cerrar la sesión, se confirma con el botón "Si", y el sistema cerrara la sesión y redirigirá a la pantalla de inicio de sesión.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Acceder a la guia de usuario del sistema -->
+            <div class="card mb-3" id="user-guide">
+                <div class="card-header">
+                    <h3 class="card-title">¿Como accedo a la guía de usuario del Sistema?</h3>
+                </div>
+                <div class="card-body">
+                    <h4><strong>Paso 1: Ingresar a la página de Guía del usuario.</strong></h4>
+                    <div class="row align-items-center">
+                        <div class="col-6 d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='img/guide/login.guide.png') }}"  alt="Imagen de recuperación" class="img-vertical">
+                        </div>
+                        <div class="col-6">
+                            <p>En la página de inicio de sesión, hace clic en “Guía de uso del Sistema”, eso redirigirá a esta página.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center align-items-center my-3"><p class="text-secondary">Sistema de Análisis Multimodal para Prácticas Docentes - Guía de Uso</p></div>
+            <div class="text-center align-items-center my-3"><p class="text-secondary">Universidad de Valparaíso</p></div>
+        </div>
+    </main>
+</body>
+
+</html>

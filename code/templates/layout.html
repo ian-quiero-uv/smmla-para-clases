@@ -18,20 +18,25 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/nouislider/dist/nouislider.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/plyr/dist/plyr.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/dropzone/dist/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/libs/apexcharts/dist/apexcharts.css') }}">
     {% block customCSS %}
     {% endblock %}
-    <!-- Bootstrap 5 JS -->
+    <!-- JS -->
     <script src="{{ url_for('static', filename='assets/dist/js/tabler.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/libs/plyr/dist/plyr.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/libs/nouislider/dist/nouislider.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/libs/dropzone/dist/dropzone-min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <!-- D3.js -->
     <script src="{{ url_for('static', filename='js/d3.v7.js') }}"></script>
+    <!-- SweetAlerts2 -->
+    <script src="{{ url_for('static', filename='assets/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
 
 </head>
 
 <body>
-    <header class="navbar navbar-expand-md bg-primary navbar-transparent d-print-none">
+    <header class="navbar navbar-expand-md d-print-none" id="navbar">
         <div class="container-xl">
             <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
                 <div class="row d-flex align-items-center">
@@ -54,19 +59,14 @@
                         <hr class="dropdown-divider"></hr>
                         <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profile">
                             <i class="ti ti-user"></i>
-                             Mis Datos
-                        </a>
-                        <!--
+                             Mis Datos</a>
                         <a class="dropdown-item disabled" href="#" data-bs-toggle="modal" data-bs-target="#password">
                             <i class="ti ti-search"></i>
-                             Cambiar Clave
-                        </a>
-                        -->
+                             Cambiar Clave</a>
                         <hr class="dropdown-divider"></hr>
                         <a class="dropdown-item fw-bold" href="#" data-bs-toggle="modal" data-bs-target="#close_session">
                             <i class="ti ti-shift-left"></i>
-                            Cerrar Sesión
-                        </a>
+                            Cerrar Sesión</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,21 @@
+.img-vertical {
+    max-width: 280px;    /* Ajusta el tamaño máximo de las imágenes */
+    height: auto;        /* Mantiene la proporción de la imagen */
+    display: block;      /* Asegura que la imagen sea un bloque */
+    margin-left: auto;   /* Centrado horizontal */
+    margin-right: auto;  /* Centrado horizontal */
+    border: 2px solid #000; /* Borde de 2px de grosor y color negro */
+    border-radius: 8px;   /* Bordes redondeados */
+    padding: 5px;         /* Espacio entre la imagen y el borde */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño final */
+}
+
+.img-reducida {
+    display: block;      /* Asegura que la imagen sea un bloque */
+    margin-left: auto;   /* Centrado horizontal */
+    margin-right: auto;  /* Centrado horizontal */
+    border: 2px solid #000; /* Borde de 2px de grosor y color negro */
+    border-radius: 8px;   /* Bordes redondeados */
+    padding: 5px;         /* Espacio entre la imagen y el borde */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño final */
+}

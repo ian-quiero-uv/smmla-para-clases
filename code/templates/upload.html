@@ -10,7 +10,7 @@
 <div class="container-fluid">
     <div class="row my-3">
         <div class="col-3 mx-4">
-            <a class="btn btn-secondary" href="/main_page">
+            <a class="btn btn-secondary" href="/main-page">
                 <span class="px-2 fw-bold">
                     <i class="ti ti-arrow-left"></i>
                     Atrás
@@ -21,7 +21,7 @@
             <h2 class="text-center">Ingrese los datos solicitados y suba el archivo de video (en formato .mp4)</h2>
         </div>
     </div>
-    <form class="form-input requires-validation" method="POST" enctype="multipart/form-data" novalidate action="/uploader">
+    <form class="form-input requires-validation" id="uploader" method="POST" enctype="multipart/form-data" novalidate action="/uploader">
         <fieldset class="form-fieldset">
             <div class="row align-items-center">
                 <div class="col-6">
@@ -74,7 +74,7 @@
                 <div class="col-6">
                     <div class="card">
                         <div class="card-header text-center">
-                            <h3 class="card-title">Sube la grabación de la clase</h3>
+                            <h3 class="card-title">Sube la grabación de la clase.</h3>
                         </div>
                         <div class="card-body">
                             <div id="dropzone" class="dropzone w-100 text-center">

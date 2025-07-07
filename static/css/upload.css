@@ -1,0 +1,50 @@
+html,
+body {
+    height: 100%;
+    width: auto;
+    background-color: #F2F2F2;
+}
+
+/*#drop-area {
+    height: 263px;
+    width: auto;
+    cursor: pointer;
+}*/
+
+#drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: auto;
+    height: 263px;
+    margin: 20px 0;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.highlight {
+    border-color: #6c6;
+}
+.thumbnail {
+    width: auto; /* Ajusta el tamaño según sea necesario */
+    height: 200px;
+    margin: 3px;
+}
+
+.dropzone {
+      border: 2px dashed #ced4da;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+}
+
+.dropzone.dragover {
+    background-color: #f1f3f5;
+}
+
+#dropzone-content img {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 0.5rem;
+}

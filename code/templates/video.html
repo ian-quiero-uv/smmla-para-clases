@@ -10,7 +10,7 @@
 <div class="container-fluid">
     <div class="row my-3">
         <div class="col-3">
-            <a href="/main_page" class="btn btn-secondary py-2" id="Atras">
+            <a href="/main-page" class="btn btn-secondary py-2" id="Atras">
                 <span class="px-2 fw-bold">
                     <i class="ti ti-arrow-left"></i>
                     Atrás
@@ -40,10 +40,12 @@
                             <div class="container">
                                 <video class="js-player" controls id="myvideo">
                                     <source src="{{ url_for('static', filename='uploads/' ~ video ) }}" type="video/mp4">
-                                    El navegador no tiene soporte para video.
+                                    Your browser does not support the video tag.
                                 </video>
                             </div>
+                            <h3 class="text-center mt-2 mb-0">Transcripción</h3>
                             <div class="container" id="transcription_chart"></div> <!--Aplicar Apex-charts-->
+                            <h3 class="text-center mt-2 mb-0">Artefactos</h3>
                             <div class="container" id="object_chart"></div>
                         </div>
                         <div class="tab-pane" id="transcrip_tab">
@@ -72,7 +74,7 @@
                             </div>
                             <div class="my-3">
                                 <button class="btn btn-info float-end" onclick="downloadText()">
-                                    <strong><i class="ti ti-download"></i>Descargar texto</strong>
+                                    <strong><i class="ti ti-download"></i> Descargar texto</strong>
                                 </button>
                             </div>
                             <div class="modal fade" id="edit-transcript" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="edit-transcript" aria-hidden="true">
@@ -101,7 +103,7 @@
                                             <th>Artefactos</th>
                                             <th>Inicio</th>
                                             <th>Cierre</th>
-                                            <th>Precisión</th>
+                                            <th>Confiabilidad</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -171,10 +173,13 @@
 <script src="{{ url_for('static', filename='js/tablas.js') }}"></script>
 <script src="{{ url_for('static', filename='js/timelapse.js') }}"></script>
 <script src="{{ url_for('static', filename='js/timelapse.js') }}"></script>
-<script>timetables('{{ transcript|tojson }}')</script>
-<script>objectTables('{{ objetos|tojson }}')</script>
+<!--<script>timetables('{{ transcript|tojson }}')</script>-->
+<!--<script>objectTables('{{ objetos|tojson }}')</script>-->
 <script src="{{ url_for('static', filename='js/notes.js') }}"></script>
 <script>jsonScanner('{{ json|tojson }}');</script>
+<script src="{{ url_for('static', filename='js/plyrApexChart.js') }}"></script>
+<script>timetables('{{ transcript|tojson }}')</script>
+<script>objectTables('{{ objetos|tojson }}')</script>
 <!--
         <script src="{{ url_for('static', filename='js/tablas.js') }}"></script>
         <script src="{{ url_for('static', filename='js/timelapse.js') }}"></script>

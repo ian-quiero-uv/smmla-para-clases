@@ -10,7 +10,10 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from werkzeug.utils import secure_filename
 import requests
 
-from program import main as programa
+from code.program import main as programa
+
+#import logging
+#from logging.handlers import RotatingFileHandler
 
 config = {
     'apiKey': "AIzaSyAKw-aWAeut-Ux-x9oWQa3Y-cQ88aJDIi8",
@@ -29,7 +32,23 @@ db = firebase.database()
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = './code/static/uploads/'
+'''
+#Logs de Flask
+if not app.debug:
+    log_dir = 'logs/flask/'
+
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    handler = RotatingFileHandler(f'{log_dir}flask_app.log', maxBytes=100000, backupCount=3)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
+'''
+
+app.config['UPLOAD_FOLDER'] = './code/static/'
+
 
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 * 1024  # 5GB
 
@@ -101,7 +120,7 @@ def index():
 def login():
     #global user
     if 'user' in session:
-        return redirect('/main_page')
+        return redirect('main-page')
     if request.method == 'POST':
         email = request.form['username']
         password = request.form['password']
@@ -114,7 +133,7 @@ def login():
                 session['refreshToken'] = user['refreshToken']
                 session['email'] = user['email']
                 #print("User  Info:", user) 
-                return redirect('/main_page')
+                return redirect('/main-page')
         except:
             flash("Usuario o contraseña no existente... ")
             return render_template('auth/login.html')
@@ -143,7 +162,6 @@ def forget():
             flash("Ocurrió un error: " + error_message)
             return render_template('auth/forget.html')
     else:
-        flash("Advertencia: no recibirá un correo de reinicio, si el correo no está registrado.")
         return render_template('auth/forget.html')
 
 @app.route("/register", methods=['GET' , 'POST'])
@@ -151,26 +169,62 @@ def register():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        
         try:
             auth.sign_in_with_email_and_password(email=email, password=password)
-            flash("Este correo ya tiene una cuenta registrada")
-            return render_template('auth/register.html')
+            print("Este correo ya tiene una cuenta registrada")
+            return jsonify({
+                'success': False,
+                'message': 'Este correo ya está en uso.'
+            }), 400
         except Exception as e:  # Captura cualquier excepción
             if "INVALID_LOGIN_CREDENTIALS" in str(e):
                 try:
-                    user = auth.create_user_with_email_and_password(email=email, password=password)
-                    flash("Usuario creado con éxito. Ahora puedes iniciar sesión ahora")
-                    return redirect(url_for('login'))
+                    auth.create_user_with_email_and_password(email=email, password=password)
+                    print("Usuario creado con éxito")
+                    # Una vez registrado, se incia session con sus datos para guardar sus datos en la base de datos, y luego se redirige a /main-page
+                    user = auth.sign_in_with_email_and_password(email, password)
+                    #Datos de session
+                    session['user'] = user['idToken']
+                    session['user_info'] = user
+                    session['expiresIn'] = user['expiresIn']
+                    session['refreshToken'] = user['refreshToken']
+                    session['email'] = user['email']
+                    #Se recupera la info del request
+                    nombre = request.form['name']
+                    rut = request.form['rut']
+                    foto = request.form['cleanRut']
+                    f = request.files['profileImage']
+                    file_name = secure_filename(f.filename)
+                    f.save(os.path.join(app.config['UPLOAD_FOLDER'], "img/users/" + file_name))
+                    #Ahora se guardaran los datos en BD
+                    data = {"correo": email, "foto": foto, "nombre": nombre, "rut": rut}
+                    db.child('usuarios').push(data, session['user'])
+
+                    return jsonify({
+                        'success': True,
+                        'message': 'Usuario creado con éxito',
+                        'redirect_url': url_for('main_page')
+                    })
+                    #return redirect(url_for('login'))
                 except Exception as e:  # Captura cualquier excepción
-                    flash("Error al registrar el usuario")
-                    return render_template('auth/register.html')
+                    print(str(e))
+                    return jsonify({
+                        'success': False,
+                        'message': 'Hubo un error a la hora de registrar al usuario.',
+                        'error' : str(e)
+                    }), 400
             else:
-                flash("Error al verificar el correo: " + str(e))
-                return render_template('auth/register.html')
+                print(str(e))
+                return jsonify({
+                    'success': False,
+                    'message': 'Hubo un error a la hora de verificar el correo.',
+                    'error' : str(e)
+                }), 400
     else:
         return render_template('auth/register.html')
 
-@app.route('/main_page', methods=['GET'])
+@app.route('/main-page', methods=['GET'])
 @login_required
 def main_page():
     #Verificamos si hay un usuario registrado ingresando a la ruta, de lo contrario, le negamos el acceso
@@ -202,6 +256,7 @@ def main_page():
 
             #Renderizamos la pagina
             return render_template('main_page.html', grabaciones=data, perfil=profile, foto=profile_photo)
+        
         except Exception as e:
             print("Error: ", e)
             flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.") #Cambiar
@@ -229,7 +284,7 @@ def video(id):
             
             data = secure_filename(data)
             #La direccion base de donde obtener todos los datos necesarios
-            base_path = app.config['UPLOAD_FOLDER'] + id + "/"
+            base_path = app.config['UPLOAD_FOLDER'] + "uploads/" + id + "/"
             
             #La direccion del video:
             video_path = id + "/" + data + ".mp4"
@@ -333,35 +388,53 @@ def uploader():
     if 'user' in session:
         #refreshToken()
         if request.method == 'POST':
-            id = str(uuid.uuid4())
+            print(request.form)
+            try:
+                id = str(uuid.uuid4())
 
-            base_path = app.config['UPLOAD_FOLDER'] + id
+                base_path = app.config['UPLOAD_FOLDER'] + "uploads/" + id
 
-            os.makedirs(base_path, exist_ok=True)
+                os.makedirs(base_path, exist_ok=True)
 
-            filename = request.form['fileName']
-            practicante = request.form['nombrePrac']
-            fecha = request.form['fecha']
-            establecimiento = request.form['nombreEstabl']
-            contenido = request.form['contenidoClase']
-            f = request.files['fileElem']
-            file_name = secure_filename(f.filename)
-            new_file_name = secure_filename(filename)
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], id + "/" + file_name))
-            file_uploaded = base_path + "/" + file_name
-            final_file = base_path + "/" + new_file_name + ".mp4"
-            thumb_path =  base_path + "/" + new_file_name + '.jpeg'
-            data = {"establecimiento":establecimiento, "fecha":fecha, "id":id, "nombre_vid":filename, "practicante":practicante, "contenido":contenido}
-            db.child('grabaciones').push(data, session['user'])
-            if file_uploaded == final_file:
-                #cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                subprocess.call(['ffmpeg', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
-            else:
-                #cambiar_resolucion(file_uploaded, final_file, 640, 480)
-                subprocess.call(['ffmpeg', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
-                os.remove(file_uploaded)
-            generarThumbnail(final_file, thumb_path)
-            return redirect(url_for('analizar', id=id, model="base"))
+                filename = request.form['fileName']
+                practicante = request.form['nombrePrac']
+                fecha = request.form['fecha']
+                establecimiento = request.form['nombreEstabl']
+                contenido = request.form['contenidoClase']
+                f = request.files['fileElem']
+                file_name = secure_filename(f.filename)
+                new_file_name = secure_filename(filename)
+                f.save(os.path.join(app.config['UPLOAD_FOLDER'], "uploads/" + id + "/" + file_name))
+                file_uploaded = base_path + "/" + file_name
+                final_file = base_path + "/" + new_file_name + ".mp4"
+                thumb_path =  base_path + "/" + new_file_name + '.jpeg'
+                if file_uploaded == final_file:
+                    #cambiar_resolucion(file_uploaded, final_file, 640, 480)
+                    subprocess.call(['ffmpeg', '-y', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
+                else:
+                    #cambiar_resolucion(file_uploaded, final_file, 640, 480)
+                    subprocess.call(['ffmpeg', '-i', file_uploaded, '-vf', 'scale=854:480', final_file]) #Proceso por consola.
+                    os.remove(file_uploaded)
+                generarThumbnail(final_file, thumb_path)
+                #Se guardan los datos en la BD
+                data = {"establecimiento":establecimiento, "fecha":fecha, "id":id, "nombre_vid":filename, "practicante":practicante, "contenido":contenido}
+                db.child('grabaciones').push(data, session['user'])
+                #Se retorna la url de analizar con los datos del video recien subido
+                #return redirect(url_for('analizar', id=id, model="base"))
+                return jsonify({
+                    'success': True,
+                    'message': 'Archivo subido correctamente.',
+                    'fetch_url': url_for('analizar', id=id, model="base")
+                })
+            except Exception as e:
+                print(str(e))
+                return jsonify({
+                    'success': False,
+                    'message': 'Hubo un error a la hora de subir la grabación.',
+                    'error' : str(e)
+                }), 400
+        else:
+            abort(401)
     else:
         abort(401)
 
@@ -376,7 +449,7 @@ def jsonupload(id):
 
         data = secure_filename(data)
         jsonData = request.get_json()
-        json_dir = app.config['UPLOAD_FOLDER'] + id + "/" + data + "Notes.json"
+        json_dir = app.config['UPLOAD_FOLDER'] + "uploads/" + id + "/" + data + "Notes.json"
         with open(json_dir, 'w') as json_write:
             json.dump(jsonData, json_write)
         return {
@@ -390,7 +463,7 @@ def jsontranscript(filename):
         jsonData = request.get_json()
         id = jsonData["id_video"]
         file_name = secure_filename(filename)
-        transcript_dir = app.config['UPLOAD_FOLDER'] + id + "/" + file_name + ".json"
+        transcript_dir = app.config['UPLOAD_FOLDER'] + "uploads/" + id + "/" + file_name + ".json"
         with open(transcript_dir, "r") as read:
             transcript = json.load(read)
         
@@ -405,25 +478,39 @@ def jsontranscript(filename):
             'response' : 'You did it!'
         }
 
-@app.route("/analizar/<id>/<model>")
+@app.route("/analizar/<id>/<model>", methods=['GET', 'POST'])
 @login_required
-def analizar(id, model):
+def analizar(id, model='base'):
     #idx = int(id)
-    od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
-    for key, value in od_dict.items():
-        data = value.get('nombre_vid')
-    data = secure_filename(data)
-    path = app.config['UPLOAD_FOLDER'] + id + "/"
-    video_file = path + data + ".mp4"
-    dir = app.config['UPLOAD_FOLDER'] + id + "/" + data + "Objects.json" 
-    with open (dir, "w") as json_file:
-        json.dump([], json_file)
-    detected = programa.main(path=path, video=video_file, modelo=model)
-    with open (dir, "w") as json_file:
-        json.dump(detected, json_file)
+    try:
+        od_dict = db.child("grabaciones").order_by_child("id").equal_to(id).get(session['user']).val()
+        for key, value in od_dict.items():
+            data = value.get('nombre_vid')
+        data = secure_filename(data)
+        path = app.config['UPLOAD_FOLDER'] + "uploads/" + id + "/"
+        video_file = path + data + ".mp4"
+        detected = programa.main(path=path, video=video_file, modelo=model)
+        dir = app.config['UPLOAD_FOLDER'] + "uploads/" + id + "/" + data + "Objects.json" 
+        with open (dir, "w") as json_file:
+            json.dump(detected, json_file)
 
-    return redirect(url_for('video', id=id))
+        #return redirect(url_for('video', id=id))
+        return jsonify({
+            'success': True,
+            'message': 'Video analizado.',
+            'redirect_url': url_for('video', id=id)
+        })
+    except Exception as e:
+        print(str(e))
+        return jsonify({
+            'success': False,
+            'message': 'Hubo un error mientras se analizaba la grabación.',
+            'error' : str(e)
+        }), 400
 
+@app.route('/guide', methods=['GET'])
+def guide():
+    return render_template('guide.html')
 
 #Generar caso con error 405 Method Not Allowed y 413 Request Entity Too Large 
 
@@ -443,4 +530,4 @@ def internal_error(error):
 if __name__=='__main__':
     app.register_error_handler(404, pagina_no_encontrada)
     app.register_error_handler(401, acceso_no_autorizado)
-    app.run(host="0.0.0.0", debug=False, port=80)
+    print(app.debug)
