@@ -50,3 +50,8 @@ Sistema de aprendizaje autónomo de elementos multimodales para docentes.
 - Se creo una página de Guía que explica el funcionamiento del sistema para los usuarios (Esta se accede por la página de Login).
 - Se implemento **Nginx** con **gunicorn** para montaje como servidor y proxy inverso.
 - Se creo la carpeta `logs` con registros de **Nginx**, esto se almacena como volumen en Docker para tener registros de accesos y errores mientras el container este activo.
+
+## Versión: 1.1.2 (*13/08/2025*)
+
+- Corrección de imagenes en la página de la Guía del sistema.
+- Corrección error 404 cuando un video no se encuentra,

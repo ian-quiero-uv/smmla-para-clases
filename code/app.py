@@ -315,9 +315,14 @@ def video(id):
 
             return render_template('video.html', video=video_path, json=json_data, transcript_dir=transcript_dir, transcript=transcript, objetos=detected, perfil=profile, foto=profile_photo)
         except Exception as e:
-            print("Error: ", e)
-            flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.")
-            return redirect(url_for('logout'))
+            if isinstance(e, FileNotFoundError):
+                flash('No existe la grabación.')
+                print('No existe la grabación.')
+                abort(404)
+            else:
+                print("Error: ", e)
+                flash("Sesión Expirada. Ingresa nuevamente para acceder al sistema.")
+                return redirect(url_for('logout'))
     else:
         abort(401)
 
